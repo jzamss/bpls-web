@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import {
-  Box,
-  Text,
-  Spacer,
-  Button,
   Panel,
+  Text,
+  Button,
+  FormPanel,
   EmailVerification,
   EPayment,
   ActionBar,
@@ -14,15 +13,13 @@ import {
 const InitialPage = (props) => {
   const [appno, setAppno] = useState()
   return (
-    <Box width={300}>
+    <Panel width={300}>
       <Label>Initial Information</Label>
-      <Spacer />
       <Text name='appno' caption='BIN or Application No.' value={appno} onChange={setAppno} />
-      <Spacer />
       <ActionBar>
         <Button label="Next" onClick={() => props.onSubmit()}/>
       </ActionBar>
-    </Box>
+    </Panel>
   )
 }
 
@@ -34,19 +31,17 @@ const VerificationPage = (props) => {
   })
 
   return (
-    <Box width={400}>
+    <Panel width={400}>
       <Label>Verify that billing information is correct</Label>
-      <Spacer />
-      <Panel context={entity} handler={setEntity} labelWidth={120}>
+      <FormPanel context={entity} handler={setEntity} labelWidth={120}>
         <Text name='billno' caption='Bill No.' readOnly />
         <Text name='billperiod' caption='Bill Period' readOnly />
         <Text name='amount' caption='Amount' readOnly />
-      </Panel>
-      <Spacer />
+      </FormPanel>
       <ActionBar>
         <Button caption="Submit" onClick={() => props.onSubmit()} />
       </ActionBar>
-    </Box>
+    </Panel>
   )
 }
 
@@ -83,13 +78,13 @@ const OnlineBillingWebController = (props) => {
   }
 
   if (!contact) {
-    return <EmailVerification 
-      handler={onVerifyEmail} 
-      onCancel={cancelEmailVerification} 
+    return <EmailVerification
+      handler={onVerifyEmail}
+      onCancel={cancelEmailVerification}
       router={router} />
 
   }
-  
+
   const { Component, params } = pages[pageIndex];
   return (
     <Component {...props} {...params} onSubmit={onSubmit} onComplete={onComplete} router={router}/>
