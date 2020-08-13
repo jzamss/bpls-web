@@ -4,19 +4,23 @@ import {
   Text,
   Button,
   FormPanel,
-  EmailVerification,
-  EPayment,
   ActionBar,
   Label,
   Spacer,
-} from "rsi-react-web";
+} from "rsi-react-web-components";
+import { EmailVerification, EPayment } from "rsi-react-filipizen-components";
 
 const InitialPage = (props) => {
   const [appno, setAppno] = useState();
   return (
     <Panel width={400}>
       <Label>Initial Information</Label>
-      <Text name="appno" caption="BIN or Application No." value={appno} onChange={setAppno} />
+      <Text
+        name="appno"
+        caption="BIN or Application No."
+        value={appno}
+        onChange={setAppno}
+      />
       <ActionBar>
         <Button label="Next" onClick={() => props.onSubmit()} />
       </ActionBar>
@@ -48,12 +52,20 @@ const VerificationPage = (props) => {
 };
 
 const pages = [
-  { name: "initbill", caption: "Initial Billing Information", Component: InitialPage },
-  { name: "verifybill", caption: "Business Billing Verification", Component: VerificationPage }, 
-  { name: "epayment", caption: "EPayment Information", Component: EPayment } 
+  {
+    name: "initbill",
+    caption: "Initial Billing Information",
+    Component: InitialPage,
+  },
+  {
+    name: "verifybill",
+    caption: "Business Billing Verification",
+    Component: VerificationPage,
+  },
+  { name: "epayment", caption: "EPayment Information", Component: EPayment },
 ];
 
-const OnlineBillingWebController = (props) => {
+const OnlineBplsBilling = (props) => {
   const [contact, setContact] = useState();
   const [pageIndex, setPageIndex] = useState(0);
   const { router } = props;
@@ -101,4 +113,4 @@ const OnlineBillingWebController = (props) => {
   );
 };
 
-export default OnlineBillingWebController;
+export default OnlineBplsBilling;

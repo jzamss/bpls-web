@@ -1,1 +1,1 @@
-export * from "./controllers"
+export { default as BplsBillingWebController } from "./bpbilling/BplsBillingWebController"

@@ -1,6 +1,6 @@
 {
   "name": "bpls-web",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "BPLS Web Modules",
   "author": "ramesesinc",
   "license": "MIT",
@@ -24,18 +24,13 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
-    "@material-ui/core": "^4.10.2",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/styles": "^4.10.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
-    "rsi-react-web": "file:../rsi-react-web"
+    "rsi-react-web-components": "file:../rsi-react-web-components",
+    "rsi-react-filipizen-components": "file:../rsi-react-filipizen-components"
   },
   "devDependencies": {
-    "@material-ui/core": "^4.10.2",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/styles": "^4.10.0",
     "babel-eslint": "^10.0.3",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
@@ -56,7 +51,8 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",
-    "rsi-react-web": "file:../rsi-react-web"
+    "rsi-react-web-components": "file:../rsi-react-web-components",
+    "rsi-react-filipizen-components": "file:../rsi-react-filipizen-components"
   },
   "files": [
     "dist"
