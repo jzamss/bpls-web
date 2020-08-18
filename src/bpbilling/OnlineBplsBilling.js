@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Panel,
   Text,
@@ -35,16 +35,17 @@ const OnlineBplsBilling = (props) => {
   const { partner, page, onCancel, onSubmit } = props
   
 
-  const getBilling = async (billOptions = {}) => {
-    const params = {txntype: TXNTYPE, refno, qtr, showdetails:true };
+  const getBilling = async () => {
+    const params = {txntype: TXNTYPE, refno, qtr, showdetails:true};
     const svc = await Service.lookupAsync(`${partner.id}:EPaymentService`);
     return await svc.getBilling(params)
   }
 
-  const loadBill = (billOptions = {}) => {
+  const loadBill = () => {
+    console.log("loading billing")
     setLoading(true);
     setError(null);
-    getBilling(billOptions).then(o => {
+    getBilling().then(o => {
       const bill = o.info;
       bill.amount = o.amount;
       bill.qtr = qtr;
@@ -62,17 +63,16 @@ const OnlineBplsBilling = (props) => {
     })
   }
 
-  const printBill = () => {
-    window.print();
-  }
-
-  const showPayOptionHandler = () => {
-    setShowPayOption(true)
-  }
+  useEffect(() => {
+    if (refno) {
+      loadBill();
+    }
+  }, [qtr])
 
   const payOptionHandler = (billOption) => {
     setShowPayOption(false)
-    loadBill(billOption)
+    setQtr(billOption.qtr);
+    // loadBill(billOption)
   }
 
   const confirmPayment = () => {
@@ -118,6 +118,7 @@ const OnlineBplsBilling = (props) => {
           <Label context={bill} caption="Owner Name" expr="ownername" />
           <Label context={bill} caption="Business Address" expr="address" />
           <Spacer />
+          <Button variant="outlined" caption='Pay Option' action={() => setShowPayOption(true)} />
           <Table items={bill ? bill.items : []} size="small" showPagination={false} >
             {/*
               <TableColumn caption="Line of Business" expr={item => item.lobname ? item.lobname : ""} />
@@ -134,19 +135,13 @@ const OnlineBplsBilling = (props) => {
           </Panel>
         </Panel>
         <ActionBar disabled={loading}>
-          <Button caption='Back' variant="text" action={() => props.onBack()} />
-          <Button caption='Pay Option' action={() => setShowPayOption(true)} />
+          <Button caption='Back' variant="text" action={() => setMode("initial")} />
           <Button caption='Confirm Payment' action={confirmPayment} />
         </ActionBar>
       </Panel>
 
       <PayOption
-          initialValue={
-            bill && {
-              billtoyear: bill.billtoyear,
-              billtoqtr: bill.billtoqtr
-            }
-          }
+          initialValue={bill && { qtr }}
           open={showPayOption}
           onAccept={payOptionHandler}
           onCancel={() => setShowPayOption(false)}
