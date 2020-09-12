@@ -23,7 +23,7 @@ const ORIGIN = 'filipizen'
 
 const OnlineBplsBilling = (props) => {
   const [mode, setMode] = useState('initial');
-  const [error, setError] = useState();
+  const [error, setError] = useState(props.error);
   const [loading, setLoading] = useState(false);
   const [refno, setRefno] = useState();
   const [showPayOption, setShowPayOption] = useState(false);
@@ -37,12 +37,11 @@ const OnlineBplsBilling = (props) => {
 
   const getBilling = async () => {
     const params = {txntype: TXNTYPE, refno, qtr, showdetails:true};
-    const svc = await Service.lookupAsync(`${partner.id}:EPaymentService`);
+    const svc = await Service.lookupAsync(`${partner.id}:OnlineBusinessBillingService`);
     return await svc.getBilling(params)
   }
 
   const loadBill = () => {
-    console.log("loading billing")
     setLoading(true);
     setError(null);
     getBilling().then(o => {
@@ -58,6 +57,7 @@ const OnlineBplsBilling = (props) => {
       setMode('viewbill');
       setLoading(false)
     }).catch(err => {
+      console.log("ERR", err)
       setError(err.toString());
       setLoading(false)
     })
@@ -71,8 +71,7 @@ const OnlineBplsBilling = (props) => {
 
   const payOptionHandler = (billOption) => {
     setShowPayOption(false)
-    setQtr(billOption.qtr);
-    // loadBill(billOption)
+    setQtr(billOption.billtoqtr);
   }
 
   const confirmPayment = () => {
@@ -82,22 +81,24 @@ const OnlineBplsBilling = (props) => {
       origin: ORIGIN,
       orgcode: partner.id,
       qtr,
+      info: { qtr },
       paidby: bill.paidby,
       paidbyaddress: bill.paidbyaddress,
       amount: bill.amount,
       paymentdetails: `Business Tax for Application No. ${bill.appno}`,
+      particulars: `Business Tax for Application No. ${bill.appno}`,
     })
   }
 
 
   return (
     <React.Fragment>
-      <Title>{page.title}</Title>
+      <Title>{"Online Business Billing"}</Title>
       <Panel visibleWhen={mode === 'initial'}>
         <Label labelStyle={styles.subtitle}>Initial Information</Label>
         <Spacer />
         <Error msg={error} />
-        <Text name="appno" caption="BIN or Application No." value={refno} onChange={setRefno} />
+        <Text name="appno" caption="BIN or Application No." value={refno} onChange={setRefno} autoFocus={true} />
         <ActionBar>
           <Button caption='Back' variant="text" action={onCancel} />
           <Button caption='Next' action={loadBill} loading={loading} disabled={loading} />
@@ -120,10 +121,6 @@ const OnlineBplsBilling = (props) => {
           <Spacer />
           <Button variant="outlined" caption='Pay Option' action={() => setShowPayOption(true)} />
           <Table items={bill ? bill.items : []} size="small" showPagination={false} >
-            {/*
-              <TableColumn caption="Line of Business" expr={item => item.lobname ? item.lobname : ""} />
-              <TableColumn caption="Tax/Fee" expr="account" />
-             */}
             <TableColumn caption="Particulars" expr={item => (item.lobname ? item.lobname : "") +  ` -${item.account}`} />
             <TableColumn caption="Amount" expr="amount" align="right" format="currency" />
             <TableColumn caption="Surcharge" expr="surcharge" align="right" format="currency" />
