@@ -27,12 +27,12 @@ const OnlineBplsBilling = (props) => {
   const [loading, setLoading] = useState(false);
   const [refno, setRefno] = useState();
   const [showPayOption, setShowPayOption] = useState(false);
-  const [bill, setBill] = useState();
+  const [bill, setBill] = useState({});
   const [payorderdetails, setPayorderdetails] = useState();
   const [barcode, setBarcode] = useState();
   const [qtr, setQtr] = useState(4);
   
-  const { partner, page, onCancel, onSubmit } = props
+  const { partner, page, contact={}, onCancel, onSubmit } = props
   
 
   const getBilling = async () => {
@@ -85,11 +85,11 @@ const OnlineBplsBilling = (props) => {
       paidby: bill.paidby,
       paidbyaddress: bill.paidbyaddress,
       amount: bill.amount,
-      paymentdetails: `Business Tax for Application No. ${bill.appno}`,
       particulars: `Business Tax for Application No. ${bill.appno}`,
     })
   }
 
+  const blur = contact.email !== bill.email;
 
   return (
     <React.Fragment>
@@ -115,11 +115,13 @@ const OnlineBplsBilling = (props) => {
           <Label context={bill} caption="Application Type" expr="apptype" />
           <Label context={bill} caption="Date Filed" expr="appdate" />
           <Label context={bill} caption="BIN" expr="bin" />
-          <Label context={bill} caption="Trade Name" expr="tradename" />
-          <Label context={bill} caption="Owner Name" expr="ownername" />
-          <Label context={bill} caption="Business Address" expr="address" />
+          <Label context={bill} caption="Trade Name" expr="tradename" blur={blur} />
+          <Label context={bill} caption="Owner Name" expr="ownername" blur={blur} />
+          <Label context={bill} caption="Business Address" expr="address" blur={blur} />
           <Spacer />
-          <Button variant="outlined" caption='Pay Option' action={() => setShowPayOption(true)} />
+          <Panel style={{display: "flex", justifyContent: "flex-start"}}>
+            <Button variant="outlined" caption='Pay Option' action={() => setShowPayOption(true)} />
+          </Panel>
           <Table items={bill ? bill.items : []} size="small" showPagination={false} >
             <TableColumn caption="Particulars" expr={item => (item.lobname ? item.lobname : "") +  ` -${item.account}`} />
             <TableColumn caption="Amount" expr="amount" align="right" format="currency" />
